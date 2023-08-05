@@ -1,0 +1,8 @@
+{
+  "name": "lighthouse-report-ci",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/ria-ahyoung/lighthouse-report-ci.git",
+  "author": "ria-ahyoung <ria.ahyoung@gmail.com>",
+  "license": "MIT"
+}
