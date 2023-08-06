@@ -6,6 +6,8 @@
   "author": "ria-ahyoung <ria.ahyoung@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "프로젝트 실행에 필요한 script 작성",
+    "build": "프로젝트 빌드에 필요한 script 작성",
     "lighthouse-report": "node .github/utils/createLightHouseReport.js"
   }
 }
