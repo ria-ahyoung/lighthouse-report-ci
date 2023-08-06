@@ -1,0 +1,44 @@
+name: Lighthouse CI
+
+on: [push]
+
+jobs:
+  Lighthouse-CI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository 🛎
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ⭐️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Cache Dependencies ⚙️
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Dependencies 🔩
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn
+
+      - name: Build Project 📦
+        run: yarn build
+
+      - name: Run Lighthouse CI 📜
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun || echo "Fail to Run Lighthouse CI!"
+
+      - name: comment Lighthouse Report PR 🔖 
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          result=$(yarn lighthouse-ci-report | tail -n +3 | head -n -1)
+          echo "$result" >> comment.txt
+          gh pr comment ${{ github.event.number }} --body "$(cat comment.txt)"
