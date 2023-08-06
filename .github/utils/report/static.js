@@ -1,3 +1,7 @@
+export const IS_SHOW_DETAIL = false;
+
+export const REPORT_FILE_PATH = 'lhci_reports/manifest.json';
+
 export const WEB_VITALS_METRICS = [
   "first-contentful-paint",
   "first-meaningful-paint",
@@ -7,4 +11,4 @@ export const WEB_VITALS_METRICS = [
   "cumulative-layout-shift",
 ];
 
-export const REPORT_FILE_PATH = 'lhci_reports/manifest.json';
+
