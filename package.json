@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "https://github.com/ria-ahyoung/lighthouse-report-ci.git",
   "author": "ria-ahyoung <ria.ahyoung@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "lighthouse-report": "node .github/utils/createLightHouseReport.js"
+  }
 }
