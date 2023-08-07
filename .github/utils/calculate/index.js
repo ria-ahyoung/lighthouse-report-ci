@@ -6,6 +6,6 @@ export function calculateAverage(arr) {
 
 export function calculateAverageWithUnit(arr) {
   const unit = arr[0].replace(/[0-9.]/g, ''); 
-  const average = calculateAverage(arr.map((value) => parseFloat(value)))
+  const average = calculateAverage(arr.map((value) => parseFloat(value.replace(/,/g, ''))))
   return formatNumber(average) + unit;
 }
