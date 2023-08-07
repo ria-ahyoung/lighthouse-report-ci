@@ -1,23 +1,47 @@
 import fs from "fs";
 
-import { WEB_VITALS_METRICS } from "./DATA.js";
 import getScoreBadge from "./getScoreBadge.js";
+import { IS_SHOW_DETAIL, WEB_VITALS_METRICS } from "./static.js";
 
-import { calculateAverage, calculateAverageWithUnit} from '../calculate/index.js'
 import { formatCategory } from "../format/index.js";
+import { calculateAverage, calculateAverageWithUnit } from '../calculate/index.js'
 
 export default function getWebVitalsReport(data) {
-  const performanceData = getAggregatedData(data);
+  const averageObj = getAggregatedData(data);
   
-  const detail = [
-    "| Scale | Web Vitals | Value |",
+  getAverageContent(averageObj);
+  IS_SHOW_DETAIL && getTotalContent(averageObj, data.length);
+};
+
+function getAverageContent(averageObj) {
+  const performanceResult = [
+    "| Scale | Web Vitals | `Average` |",
     "| --- | --- | --- |",
-    ...getTableContent(performanceData),
+    ...getTableContent(averageObj),
   ].join("\n");
 
   console.log('**📃 Web Vitals Summary :**\n');
-  console.log(detail + '\n');
-};
+  console.log(performanceResult + '\n');
+}
+
+function getTotalContent(averageObj, length) {
+  const performanceKeys = Object.keys(averageObj);
+
+  const detailResult = performanceKeys.map((category) => {
+    const values = averageObj[category]['values'];
+    const averageBadge = getScoreBadge(calculateAverage(averageObj[category]['scores']) * 100);
+    return `| ${averageBadge} | **${formatCategory(category)}** | ${values.join(' | ')} |`;
+  })
+
+  const tableHeaders = Array.from({ length }, (_, index) => `Value ${index + 1}`);
+  const tableDivider = Array.from({ length }, () => ` ---- `);
+
+  console.log('<details><summary>Detail Results</summary>\n');
+  console.log(`| Scale | Category | ${tableHeaders.join(' | ')} |`);
+  console.log(`| ---- | ---- | ${tableDivider.join(' | ')} |`);
+  console.log(detailResult.join('\n') + '\n');
+  console.log('</details>\n');
+}
 
 function getAggregatedData(data) {
   const aggregatedData = {};
@@ -42,11 +66,11 @@ function getAggregatedData(data) {
   return aggregatedData;
 }
 
-function getTableContent(performanceData) {
+function getTableContent(averageObj) {
   return WEB_VITALS_METRICS.map((value) =>{
-    const scoreBadge = getScoreBadge(calculateAverage(performanceData[value]['scores']) * 100);
-    const scorePercent = calculateAverageWithUnit(performanceData[value]['values']);
+    const scoreBadge = getScoreBadge(calculateAverage(averageObj[value]['scores']) * 100);
+    const scorePercent = calculateAverageWithUnit(averageObj[value]['values']);
     const formattedCategory = formatCategory(value);
-    return `| ${scoreBadge} | ${formattedCategory} | ${scorePercent} |`;
+    return `| ${scoreBadge} | **${formattedCategory}** | ${scorePercent} |`;
   });
 }
